@@ -1,0 +1,73 @@
+import pygame
+from sys import exit
+import random
+
+
+pygame.init()
+screen = pygame.display.set_mode((800, 400))
+pygame.display.set_caption("Rock, Paper, Scissors")
+clock = pygame.time.Clock()
+
+bg_surface = pygame.image.load('graphics/bg1.png')
+rock_image = pygame.image.load('graphics/rock.png')
+paper_image = pygame.image.load('graphics/paper.png')
+scissors_image = pygame.image.load('graphics/scissors.png')
+
+
+rock_image = pygame.transform.scale(rock_image, (100, 100))
+paper_image = pygame.transform.scale(paper_image, (100, 100))
+scissors_image = pygame.transform.scale(scissors_image, (100, 100))
+
+font = pygame.font.Font(None, 50)
+text_surface = font.render('Hello World', True, 'blue')
+
+player_choice = None
+computer_choice = None
+result = ""
+
+def get_computer_choice():
+    return random.choice(["rock", "paper", "scissors"])
+
+def determine_winner(player, computer):
+    if player == computer:
+        return "It's a tie!"
+    elif (player == "rock" and computer == "scissors") or \
+         (player == "paper" and computer == "rock") or \
+         (player == "scissors" and computer == "paper"):
+        return "You win!"
+    else:
+        return "You lose!"
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            if 100 <= mouse_pos[0] <= 200 and 300 <= mouse_pos[1] <= 400:
+                player_choice = "rock"
+            elif 350 <= mouse_pos[0] <= 450 and 300 <= mouse_pos[1] <= 400:
+                player_choice = "paper"
+            elif 600 <= mouse_pos[0] <= 700 and 300 <= mouse_pos[1] <= 400:
+                player_choice = "scissors"
+            if player_choice:
+                computer_choice = get_computer_choice()
+                result = determine_winner(player_choice, computer_choice)
+
+    screen.blit(bg_surface, (0, 0))
+    screen.blit(text_surface, (300, 50))
+    screen.blit(rock_image, (100, 300))
+    screen.blit(paper_image, (350, 300))
+    screen.blit(scissors_image, (600, 300))
+    
+    if player_choice and computer_choice:
+        player_text = font.render(f'Player: {player_choice}', True, 'blue')
+        computer_text = font.render(f'Computer: {computer_choice}', True, 'blue')
+        result_text = font.render(result, True, 'blue')
+        screen.blit(player_text, (50, 150))
+        screen.blit(computer_text, (50, 200))
+        screen.blit(result_text, (50, 250))
+    
+    pygame.display.update()
+    clock.tick(60)
